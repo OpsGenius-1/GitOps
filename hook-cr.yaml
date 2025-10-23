@@ -1,0 +1,40 @@
+---
+- name: Test connectivity to Windows servers
+  hosts: windows
+  gather_facts: no
+  vars:
+    # Replace these with secure values or use Ansible Vault / host_vars
+    ansible_user: "Administrator"
+    ansible_password: "CHANGE_ME"
+    ansible_connection: winrm
+    ansible_port: 5986
+    ansible_winrm_transport: ntlm
+    ansible_winrm_server_cert_validation: ignore
+  tasks:
+    - name: Test WinRM connectivity
+      win_ping:
+
+    - name: Get OS information
+      win_command: systeminfo
+
+    # Example 1: Run an inline PowerShell script
+    - name: Run inline PowerShell script
+      win_powershell:
+        script: |
+          Write-Output "Hello from remote PowerShell"
+          Get-Process | Select-Object -First 5
+
+    # Example 2: Copy a local script to the Windows host and execute it
+    # Place your local script at ./files/myscript.ps1 (relative to the playbook)
+    - name: Copy local PowerShell script to remote host
+      win_copy:
+        src: files/myscript.ps1
+        dest: C:\Windows\Temp\myscript.ps1
+
+    - name: Execute the copied PowerShell script
+      win_shell: powershell.exe -NoProfile -ExecutionPolicy Bypass -File 'C:\Windows\Temp\myscript.ps1'
+      register: script_result
+
+    - name: Show script output
+      debug:
+        var: script_result.stdout
