@@ -1,0 +1,24 @@
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  labels:
+    machineconfiguration.openshift.io/role: master
+  name: enable-multipathing-iscsi
+spec:
+  config:
+    ignition: 
+      version: 3.2.0
+    storage:
+      files:
+      - contents:
+          source: data:text/plain;charset=utf-8;base64,ZGVmYXVsdHMgewogICAgdXNlcl9mcmllbmRseV9uYW1lcyB5ZXMKICAgIGZpbmRfbXVsdGlwYXRocyB5ZXMKICAgIHBhdGhfZ3JvdXBpbmdfcG9saWN5IGdyb3VwX2J5X3ByaW8KICAgIHBhdGhfY2hlY2tlciB0dXIKICAgIHByaW8gb250YXAKICAgIHBvbGxpbmdfaW50ZXJ2YWwgNQogICAgbm9fcGF0aF9yZXRyeSBxdWV1ZQogICAgbWF4X2ZkcyBtYXgKICAgIGZhc3RfaW9fZmFpbF90bW8gNQogICAgZGV2X2xvc3NfdG1vIGluZmluaXR5Cn0KIApibGFja2xpc3QgewogICAgZGV2bm9kZSAiXnNkW2Etel0iCiAgICBkZXZub2RlICJecHhkWzAtOV0qIgogICAgZGV2bm9kZSAiXnB4ZCoiCn0KIApibGFja2xpc3RfZXhjZXB0aW9ucyB7CiAgICBkZXZpY2UgewogICAgICAgIHZlbmRvciAiTkVUQVBQIgogICAgICAgIHByb2R1Y3QgIkxVTi4qIgogICAgfQp9CiAKZGV2aWNlcyB7CiAgICBkZXZpY2UgewogICAgICAgIHZlbmRvciAiTkVUQVBQIgogICAgICAgIHByb2R1Y3QgIkxVTi4qIgogICAgICAgIHBhdGhfY2hlY2tlciB0dXIKICAgICAgICBwYXRoX3NlbGVjdG9yICJzZXJ2aWNlLXRpbWUgMCIKICAgICAgICBoYXJkd2FyZV9oYW5kbGVyICIwIgogICAgICAgIHByaW8gb250YXAKICAgICAgICBmYWlsYmFjayBpbW1lZGlhdGUKICAgICAgICBycl93ZWlnaHQgdW5pZm9ybQogICAgICAgIHJyX21pbl9pb19ycSAxCiAgICAgICAgbm9fcGF0aF9yZXRyeSBxdWV1ZQogICAgICAgIGZhc3RfaW9fZmFpbF90bW8gNQogICAgICAgIGRldl9sb3NzX3RtbyBpbmZpbml0eQogICAgfQp9
+        filesystem: root
+        mode: 0644
+        overwrite: true
+        path: /etc/multipath.conf
+    systemd:
+      units:
+      - name: multipathd.service
+        enabled: true
+      - name: iscsid.service
+        enabled: true
